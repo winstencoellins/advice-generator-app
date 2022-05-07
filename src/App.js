@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react';
+import Card from './components/Card';
+import dice from './assets/images/icon-dice.svg';
 
 function App() {
+  const [id, setId] = useState(null);
+  const [advice, setAdvice] = useState(null);
+
+  const URL = "https://api.adviceslip.com/advice"
+
+  const fetchData = () => {
+    fetch(URL)
+      .then(response => response.json())
+      .then(data => {
+        setId(data.slip.id)
+        setAdvice(data.slip.advice)
+      })
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg main">
+      <Card adviceId={id} advice={advice} />
+      <button onClick={fetchData} className="button">
+        <img src={dice} alt="Dice Image" />
+      </button>
     </div>
   );
 }
